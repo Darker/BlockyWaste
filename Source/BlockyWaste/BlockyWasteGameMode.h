@@ -14,13 +14,8 @@ class ABlockyWasteGameMode : public AGameModeBase
 
 public:
 	ABlockyWasteGameMode();
-  virtual void StartPlay() override; 
 private:
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    UHierarchicalInstancedStaticMeshComponent* _blocksMesh;
-
-  UStaticMesh* block = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), NULL, TEXT("/Game/Geometry/Meshes/1M_Cube.1M_Cube")));
+  
 };
 
 

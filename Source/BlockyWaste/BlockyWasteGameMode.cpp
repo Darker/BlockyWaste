@@ -16,9 +16,13 @@ ABlockyWasteGameMode::ABlockyWasteGameMode()
 	HUDClass = ABlockyWasteHUD::StaticClass();
 }
 
-void ABlockyWasteGameMode::StartPlay()
-{
+//void ABlockyWasteGameMode::StartPlay()
+//{
+//	AGameModeBase::StartPlay();
+//
+//	UE_LOG(LogTemp, Warning, TEXT("Hello"));
+//
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("This message will appear on the screen!"));
+//
+//}
 
-
-
-}
