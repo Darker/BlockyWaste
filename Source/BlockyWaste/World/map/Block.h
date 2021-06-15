@@ -9,6 +9,8 @@ using namespace Units;
 class Block final
 {
 public:
+
+
   //! Block size
   static constexpr Length BLOCK_SIZE = 50_cm;
 
