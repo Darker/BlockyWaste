@@ -3,8 +3,8 @@
 #ifdef __INTELLISENSE__
 
 #define OVERRIDE_PLATFORM_HEADER_NAME ./
-#define PRAGMA_DISABLE_DEPRECATION_WARNINGS if 0
-#define PRAGMA_ENABLE_DEPRECATION_WARNINGS endif
+//#define PRAGMA_DISABLE_DEPRECATION_WARNINGS if 0
+//#define PRAGMA_ENABLE_DEPRECATION_WARNINGS endif
 #else
 #endif
 
@@ -27,6 +27,7 @@ class ABlockyWasteCharacter;
 class AStaticMeshActor;
 class USTaticMesh;
 class UInstancedStaticMeshComponent;
+class UInstancedStaticMeshWithReuse;
 class UMaterial;
 
 
@@ -47,26 +48,36 @@ struct BlockInstInfo
   int32 instId;
 };
 
+struct ChunkInstInfo
+{
+	TArray<BlockInstInfo> blocks;
+	World::Chunk::Coords chunkCoord;
+};
+
 UCLASS()
 class ABlockGenerator : public AActor
 {
 	GENERATED_BODY()
 public:
-		//The player as a reference point where to place blocks and push them to the engine
+	//The player as a reference point where to place blocks and push them to the engine
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		ABlockyWasteCharacter* PlayerCharacter = nullptr;
 
+	// Render distance in metres, any data further away may be unloaded
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Render distance [m]")
+		float RenderDistance = 50;
+
 	// Mesh component for rocks
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		UInstancedStaticMeshComponent* BlocksMeshComponentRock = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Meshes")
+		UInstancedStaticMeshWithReuse* BlocksMeshComponentRock = nullptr;
 
   // Mesh component for dirt
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    UInstancedStaticMeshComponent* BlocksMeshComponentDirt = nullptr;
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Meshes")
+		UInstancedStaticMeshWithReuse* BlocksMeshComponentDirt = nullptr;
 
   // Mesh component for grass
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    UInstancedStaticMeshComponent* BlocksMeshComponentGrass = nullptr;
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Meshes")
+		UInstancedStaticMeshWithReuse* BlocksMeshComponentGrass = nullptr;
 
 	// Template for the blocks, taken from the default UE cube
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -94,11 +105,13 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	
 protected:
-  UInstancedStaticMeshComponent* GetBlockStaticMesh(uint32 blockType);
+	UInstancedStaticMeshWithReuse* GetBlockStaticMesh(uint32 blockType);
 	virtual void PopulateNearPlayer();
 private:
+	using InstArray = TArray<BlockInstInfo>;
+	using InstanceMap = TMap<World::Chunk::Coords, InstArray>;
+
 	FVector _lastPlayerPos;
-  using InstArray = TArray<BlockInstInfo>;
-	TMap<World::Chunk::Coords, InstArray> _chunkInstances;
+	InstanceMap _chunkInstances;
   World::MapManager _mapManager;
 };

@@ -37,9 +37,12 @@ Chunk* WorldGenerator::CreateChunk(Chunk::Coords coords)
   return newChunk;
 }
 
-Length WorldGenerator::GetWorldHeight(Vector3LL worldBlockCoords)
+Length WorldGenerator::GetWorldHeight(Vector3LL worldBlockCoords) const
 {
-  return 500_mm + 5000_mm * std::cos(std::sin(worldBlockCoords.X()/1017.0) + 0.5- std::sin(worldBlockCoords.Y() / 1028.0));
+  const Length ms100 = 100_m;
+  float noise = (1.0f+_simplex.fractal(7, worldBlockCoords.X()* 2.0f, worldBlockCoords.Y() * 2.0f))/2.0f;
+  noise = std::powf(noise, 2.85); //std::cos(std::sin(worldBlockCoords.X()/1017.0) + 0.5- std::sin(worldBlockCoords.Y() / 1028.0));
+  return ms100 * noise;
 }
 
 }

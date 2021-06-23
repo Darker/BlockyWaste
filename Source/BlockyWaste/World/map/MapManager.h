@@ -2,7 +2,7 @@
 #include "WorldGenerator.h"
 #include "Chunk.h"
 
-#include <map>
+#include <unordered_map>
 
 #include "Math/GenericOctree.h"
 
@@ -24,10 +24,11 @@ public:
   virtual ~MapManager() {}
 
   Chunk* GetChunk(const Chunk::Coords& coords, LoadMode mode = LoadMode::Load);
-  
+  //! Returns height in metres
+  int GetWorldHeight(Vector<float, 2> coordinatesXY) const;
 
 private:
-  using ChunkContainer = std::map<Chunk::Coords, Chunk*, Chunk::Coords::NaiveCoordComparator>;
+  using ChunkContainer = std::unordered_map<Chunk::Coords, Chunk*, Chunk::Coords::KeyHasher>;
   ChunkContainer _map;
   WorldGenerator _generator;
 };

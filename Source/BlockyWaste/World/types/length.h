@@ -17,6 +17,7 @@ public:
   static constexpr Length FromCentimetres(LengthNumType cm) { return { cm * CentimetreCount }; }
 
   Length constexpr operator*(double value) const { return Length(std::round(length * value)); }
+  Length constexpr operator*(float value) const { return Length(std::round(length * value)); }
   Length constexpr operator*(LengthNumType value) const { return Length(value*length); }
   Length constexpr operator+(LengthNumType value) const { return Length(value+length); }
   Length constexpr operator+(Length value) const { return Length(value.length + length); }

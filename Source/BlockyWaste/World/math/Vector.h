@@ -185,6 +185,15 @@ public:
     }
   };
 
+  //! For hashing in unordered map
+  struct KeyHasher
+  {
+    std::size_t operator()(const Vector& k) const
+    {
+      return k.GetTypeHash();
+    }
+  };
+
   Vector(const Vector& v) : values(v.values) {}
   Vector(Vector&& v) : values(std::move(v.values)) {}
 
