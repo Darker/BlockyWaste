@@ -14,7 +14,7 @@ Chunk* MapManager::GetChunk(const Chunk::Coords& coords, LoadMode mode)
   it = _map.find(coords);
   if (it != _map.end())
   {
-    return it->second;
+    return it->second.get();
   }
   else
   {

@@ -39,5 +39,3 @@ private:
   //! Instances that will be added by CommitInstances call.
   TArray<FTransform> _lazyInstances;
 };
-
-//inline UInstancedStaticMeshWithReuse::UInstancedStaticMeshWithReuse(class FObjectInitializer const& init) : UInstancedStaticMeshComponent(init) {}

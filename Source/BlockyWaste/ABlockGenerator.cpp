@@ -25,15 +25,9 @@ ABlockGenerator::ABlockGenerator()
 		((ABlockGenerator*)nullptr)->BeginPlay();
 	}
 
-	
-	//BlocksMeshComponent->SetStaticMesh(BlockMesh);
-	//BlocksMeshComponent->SetMaterial(0, BlockMaterial);
   BlocksMeshComponentRock = CreateDefaultSubobject<UInstancedStaticMeshWithReuse>(TEXT("Instanced blocks mesh Rock"));
   BlocksMeshComponentDirt = CreateDefaultSubobject<UInstancedStaticMeshWithReuse>(TEXT("Instanced blocks mesh Dirt"));
   BlocksMeshComponentGrass = CreateDefaultSubobject<UInstancedStaticMeshWithReuse>(TEXT("Instanced blocks mesh Grass"));
-  
-
-	//RootComponent = BlocksMeshComponent;
 }
 void ABlockGenerator::PostInitializeComponents()
 {
@@ -51,44 +45,14 @@ void ABlockGenerator::BeginPlay()
   // Move player slightly above ground level
   FVector playerLocation = PlayerCharacter->GetActorLocation();
   int height = _mapManager.GetWorldHeight({ { playerLocation.X, playerLocation.Y } });
-  playerLocation.Z = height * 100.0f+1500.0f;
+  playerLocation.Z = height * 100.0f+1100.0f;
   PlayerCharacter->SetActorLocation(playerLocation, false, nullptr, ETeleportType::TeleportPhysics);
-  //PopulateNearPlayer();
-	//Cast<ABlockyWasteCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0))
-	//UWorld* const GameWorld = GetWorld();
-	//if (GameWorld)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("This message will appear on the screen!"));
-
-	//	//FVector playerOrigin = PlayerCharacter->
-	//	// for a test, just add them everywhere
-	//	for (int i = 0; i < 2000; ++i)
-	//	{
-
-	//		const World::Vector3<float> coords = World::Vector3<int>::FromArrayOffset<World::CHUNK_SIZE>(i).Convert<float>();
-	//		const FVector location(100*coords[0], 100 * coords[1], 300 + 100 * coords[2]);
-	//		FTransform t(location);
-	//		BlocksMeshComponent->AddInstance(t);
-	//		
-	//		// if I use individual meshes it works fine
-	//		//if (BlockMaterial)
-	//		//{
-	//		//	AStaticMeshActor* actor = GameWorld->SpawnActorDeferred<AStaticMeshActor>(BlockTemplateClass, t, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-	//		//	actor->GetStaticMeshComponent()->SetStaticMesh(BlockMesh);
-	//		//	actor->GetStaticMeshComponent()->SetMaterial(0, BlockMaterial);
-	//		//	UGameplayStatics::FinishSpawningActor(actor, t);
-	//		//}
-
-	//	}
-	//}
 }
 
 void ABlockGenerator::PopulateNearPlayer()
 {
-  
   // calculate chunks around player
   FVector playerLocation = UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation();
-  //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player: [") + FString::SanitizeFloat(playerLocation.X) + "," + FString::SanitizeFloat(playerLocation.Y) + "," + FString::SanitizeFloat(playerLocation.Z) + "]");
   // to chunk coordinate 
   Vector3F worldPlayerCoords{ { playerLocation.X, playerLocation.Y, playerLocation.Z } };
   Chunk::Coords coords = Chunk::Coords::FromWorldCoords(worldPlayerCoords);
@@ -149,8 +113,6 @@ void ABlockGenerator::PopulateNearPlayer()
 
   TMap<uint32, InstanceTransformAndChunks> newInstances;
 
-  //TArray<int32> 
-
   // add chunk blocks to map
   for (Chunk* chunk : chunksToAdd)
   {
@@ -163,11 +125,6 @@ void ABlockGenerator::PopulateNearPlayer()
     // create region info
     InstArray& instances = _chunkInstances.FindOrAdd(pos);
 
-    
-    //if (!_chunkInstances.Contains(pos))
-    //{
-    //  GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Red, TEXT("Fatal error: position not correctly stored in map!"));
-    //}
 
     for (size_t i = 0; i < World::BLOCKS_PER_CHUNK; ++i)
     {
@@ -195,8 +152,7 @@ void ABlockGenerator::PopulateNearPlayer()
   for (const auto& blockDataPair : newInstances)
   {
     UInstancedStaticMeshComponent* c = GetBlockStaticMesh(blockDataPair.Key);
-    //TArray<int32> newIds;
-    //newIds.Reserve(blockDataPair.Value.chunks.Num());
+
     TArray<int32> newIds = c->AddInstances(blockDataPair.Value.transforms, true);
     // add new instances to the index
     for (size_t i = 0; i < blockDataPair.Value.chunks.Num(); ++i)

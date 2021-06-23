@@ -17,14 +17,6 @@ int32 UInstancedStaticMeshWithReuse::AddInstance(const FTransform& InstanceTrans
   }
 }
 
-
-//int32 index;
-//if (_unusedIds.Find(id, index))
-//{
-//  _unusedIds.RemoveAt(index);
-//  UpdateInstanceTrasform(id, InstanceTransform, false, true, true);
-//  return
-//}
 TArray<int32> UInstancedStaticMeshWithReuse::AddInstances(const TArray<FTransform>& InstanceTransforms, bool bShouldReturnIndices)
 {
   const TArray<FTransform>* toBeAddedPtr = &InstanceTransforms;
